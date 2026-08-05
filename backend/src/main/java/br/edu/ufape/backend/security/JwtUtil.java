@@ -27,7 +27,7 @@ public class JwtUtil {
         byte[] keyBytes;
         try {
             keyBytes = Decoders.BASE64.decode(secret);
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
             keyBytes = secret.getBytes();
         }
         return Keys.hmacShaKeyFor(keyBytes);

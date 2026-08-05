@@ -45,7 +45,7 @@
           name="password" 
           [(ngModel)]="registroData.password" 
           required 
-          placeholder="Sua senha"
+          placeholder="Mínimo 6 caracteres"
           minlength="6"
           #password="ngModel">
         <div class="error-message" *ngIf="password.invalid && (password.dirty || password.touched)">
