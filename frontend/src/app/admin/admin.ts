@@ -1,25 +1,23 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-admin',
   imports: [CommonModule, RouterLink],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+  templateUrl: './admin.html',
+  styleUrl: './admin.css',
 })
-export class Home implements OnInit {
+export class Admin implements OnInit {
+  private http = inject(HttpClient);
   private authService = inject(AuthService);
 
   userEmail: string | null = null;
-  userRole: string | null = null;
-  isAdmin = false;
 
   ngOnInit(): void {
     this.userEmail = this.authService.getEmail();
-    this.userRole = this.authService.getRole();
-    this.isAdmin = this.userRole === 'ADMIN';
   }
 
   logout(): void {

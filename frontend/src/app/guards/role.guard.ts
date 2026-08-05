@@ -5,22 +5,27 @@ import { AuthService } from '../services/auth.service';
 export const roleGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  
-  // Pega as roles permitidas que definimos lá no app.routes.ts
-  const expectedRoles = route.data['roles'] as string[];
-  const userRole = authService.getRole();
+
+  // pega as roles liberadas no routes
+  const expectedRoles = route.data['roles'] as Array<string>;
+
+  if (!expectedRoles || expectedRoles.length === 0) {
+    return true; 
+  }
 
   if (!authService.isAuthenticated()) {
     router.navigate(['/login']);
     return false;
   }
 
-  // Verifica se a role do usuario ta na lista de permitidas da rota
-  if (expectedRoles?.includes(userRole as string)) {
+  const userRole = authService.getRole();
+
+  // ve se o usuario tem a role certa
+  if (userRole && expectedRoles.includes(userRole)) {
     return true;
   }
 
-  alert('Acesso negado: Você não tem permissão para acessar esta funcionalidade.');
-  router.navigate(['/login']);
+  // sem permissao, volta pra home
+  router.navigate(['/home']);
   return false;
 };

@@ -1,0 +1,21 @@
+<div class="admin-container">
+  <div class="admin-card">
+    <div class="admin-header">
+      <div class="badge-admin">ADMIN</div>
+      <h1>Painel Administrativo</h1>
+      <p class="subtitle">Bem-vindo, <strong>{{ userEmail }}</strong></p>
+    </div>
+
+    <div class="admin-body">
+      <!-- Aqui você poderá adicionar tabelas de gerenciamento, formulários, gráficos, etc. -->
+      <p style="text-align: center; color: #64748b; margin-top: 2rem;">
+        O painel administrativo está pronto para receber suas funcionalidades.
+      </p>
+    </div>
+
+    <div class="admin-footer">
+      <a routerLink="/home" class="btn-secondary">← Voltar para Home</a>
+      <button class="btn-logout" (click)="logout()">Sair</button>
+    </div>
+  </div>
+</div>
