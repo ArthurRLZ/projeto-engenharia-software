@@ -14,8 +14,7 @@ export class Registro {
   registroData = {
     nome: '',
     email: '',
-    password: '',
-    role: 'USER'
+    password: ''
   };
 
   private authService = inject(AuthService);
