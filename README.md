@@ -105,6 +105,3 @@ Na inicialização, o sistema cria automaticamente um usuário administrador pad
 | `POST` | `/api/auth/logout` | Encerra a sessão no servidor | Autenticado |
 | `GET` | `/api/admin/**` | Rotas exclusivas para administradores | Role ADMIN |
 
-
-.\mvnw test
-```
