@@ -14,8 +14,7 @@ export class Registro {
   registroData = {
     nome: '',
     email: '',
-    password: '',
-    role: 'USER'
+    password: ''
   };
 
   private authService = inject(AuthService);
@@ -24,7 +23,7 @@ export class Registro {
   onSubmit() {
     this.authService.registro(this.registroData).subscribe({
       next: () => {
-        // Se o backend salvar o usuário, avisa que deu certo e joga pra tela de login
+        // se der certo, avisa e manda pro login
         alert('Registro efetuado com sucesso! Faça login.');
         this.router.navigate(['/login']);
       },

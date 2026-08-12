@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.edu.ufape.backend.model.User;
 
-//Adaptador da entidade User para o spring security
+// adaptador do user pro spring security
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;

@@ -11,10 +11,9 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  login(credentials: any): Observable<any> {
-    return this.http.post<{token: string}>(`${this.apiUrl}/login`, credentials).pipe(
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/api/auth/login`, credentials).pipe(
       tap(response => {
-        // Salva o token no navegador se a api retornar sucesso
         if (response?.token) {
           localStorage.setItem('jwt_token', response.token);
         }
@@ -23,7 +22,7 @@ export class AuthService {
   }
 
   registro(dados: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/registro`, dados);
+    return this.http.post(`${this.apiUrl}/api/auth/register`, dados);
   }
 
   logout(): void {
@@ -39,20 +38,27 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  getRole(): string | null {
+  private decodePayload(): Record<string, any> | null {
     const token = this.getToken();
     if (!token) return null;
-    
     try {
-      // O JWT tem 3 partes. O payload é a do meio (índice 1). Decodificamos de base64.
       const payload = token.split('.')[1];
-      const decoded = JSON.parse(atob(payload));
-      
-      // Procura o campo role no json (Spring Boot costuma usar role ou authorities)
-      return decoded.role || decoded.roles || decoded.authorities || null;
+      return JSON.parse(atob(payload));
     } catch (e) {
       console.error('Erro ao decodificar token JWT', e);
       return null;
     }
+  }
+
+  // retorna a role do usuario logado ('ADMIN' ou 'USER'), ou null
+  getRole(): string | null {
+    const payload = this.decodePayload();
+    return payload ? (payload['role'] ?? null) : null;
+  }
+
+  // retorna o e-mail do usuario logado
+  getEmail(): string | null {
+    const payload = this.decodePayload();
+    return payload ? (payload['sub'] ?? null) : null;
   }
 }

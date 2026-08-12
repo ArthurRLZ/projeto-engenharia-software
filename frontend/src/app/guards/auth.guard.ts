@@ -6,7 +6,7 @@ export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Verifica se tem token. Se não tiver, chuta de volta pra tela de login
+  // ve se tem token, senao manda pro login
   if (authService.isAuthenticated()) {
     return true;
   }

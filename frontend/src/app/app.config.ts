@@ -9,7 +9,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    // Avisa o Angular para usar nosso interceptor em TODA requisição HTTP que fizermos
+    // avisa o angular pra usar o interceptor
     provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };
