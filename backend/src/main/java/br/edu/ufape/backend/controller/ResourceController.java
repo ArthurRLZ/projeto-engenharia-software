@@ -1,7 +1,10 @@
 package br.edu.ufape.backend.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +29,11 @@ public class ResourceController {
     public ResponseEntity<ResourceResponse> criarRecurso(@Valid @RequestBody ResourceRequest request) {
         ResourceResponse response = resourceService.criarRecurso(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResourceResponse>> listarRecursos() {
+        List<ResourceResponse> response = resourceService.listarRecursos();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
