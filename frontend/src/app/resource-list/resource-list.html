@@ -37,11 +37,12 @@
         </div>
         <h3>{{ recurso.nome }}</h3>
         <p class="resource-descricao">{{ recurso.descricao }}</p>
-        <p class="resource-capacidade" *ngIf="recurso.capacidade">
+        <p class="resource-capacidade" *ngIf="recurso.capacidade != null">
           👥 Capacidade: {{ recurso.capacidade }}
         </p>
+        <a [routerLink]="['/reserva', recurso.id]" class="btn-reservar">Reservar</a>
       </div>
     </div>
 
   </div>
-</div>
+</div>
