@@ -4,6 +4,8 @@ import { Registro } from './registro/registro';
 import { Home } from './home/home';
 import { Admin } from './admin/admin';
 import { CadastroRecurso } from './cadastro-recurso/cadastro-recurso';
+import { ResourceList } from './resource-list/resource-list';
+import { SolicitarReserva } from './solicitar-reserva/solicitar-reserva';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -23,5 +25,16 @@ export const routes: Routes = [
     component: CadastroRecurso,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['ADMIN'] }
-  }
+  },
+  {
+    path: 'recursos',
+    component: ResourceList,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reserva/:id',
+    component: SolicitarReserva,
+    canActivate: [authGuard]
+  },
+  { path: '**', redirectTo: '/login' }
 ];
