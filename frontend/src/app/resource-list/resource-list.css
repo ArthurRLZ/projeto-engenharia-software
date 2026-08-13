@@ -143,3 +143,20 @@
   color: #777;
   margin: 0;
 }
+
+/* botao de reservar em cada card */
+.btn-reservar {
+  display: block;
+  text-align: center;
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+  padding: 8px 0;
+  font-size: 13px;
+  border: 1px solid #004494;
+  margin-top: 4px;
+}
+
+.btn-reservar:hover {
+  background-color: #004494;
+}
