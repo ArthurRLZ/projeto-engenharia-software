@@ -9,6 +9,7 @@ import br.edu.ufape.backend.model.enums.StatusReserva;
 import br.edu.ufape.backend.repository.ReservationRepository;
 import br.edu.ufape.backend.repository.ResourceRepository;
 import br.edu.ufape.backend.repository.UserRepository;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,14 +42,15 @@ public class ReservationService {
                     "Horário de fim deve ser maior que horário de início");
         }
 
-        boolean conflict = reservationRepository
-                .existsByResourceAndDataAndHorarioInicioLessThanAndHorarioFimGreaterThan(
-                        resource,
-                        request.getData(),
-                        request.getHorarioFim(),
-                        request.getHorarioInicio());
+        // nao considera reservas canceladas como conflito (task #84)
+        List<StatusReserva> statusesAtivos = List.of(StatusReserva.PENDENTE, StatusReserva.CONFIRMADA);
+        List<Long> idsConflitantes = reservationRepository.findConflictingResourceIds(
+                request.getData(),
+                request.getHorarioInicio(),
+                request.getHorarioFim(),
+                statusesAtivos);
 
-        if (conflict) {
+        if (idsConflitantes.contains(resource.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Horário ocupado");
         }
 
