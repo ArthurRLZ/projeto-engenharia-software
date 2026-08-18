@@ -35,13 +35,8 @@ public class ReservationService {
 
         Resource resource = resourceRepository.findById(request.getResourceId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource não encontrado"));
-
-        if (request.getHorarioFim() == null || request.getHorarioInicio() == null
-                || !request.getHorarioFim().isAfter(request.getHorarioInicio())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Horário de fim deve ser maior que horário de início");
-        }
-
+        
+                
         // nao considera reservas canceladas como conflito (task #84)
         List<StatusReserva> statusesAtivos = List.of(StatusReserva.PENDENTE, StatusReserva.CONFIRMADA);
         List<Long> idsConflitantes = reservationRepository.findConflictingResourceIds(
