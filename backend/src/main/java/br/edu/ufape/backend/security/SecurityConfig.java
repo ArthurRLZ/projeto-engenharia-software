@@ -89,6 +89,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/resources/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/resources").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/reservations").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/reservations/**").authenticated()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())

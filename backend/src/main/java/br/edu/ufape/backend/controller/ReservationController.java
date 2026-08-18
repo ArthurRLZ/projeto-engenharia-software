@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -37,6 +39,12 @@ public class ReservationController {
     public ResponseEntity<Page<MinhaReservaResponse>> listarMinhasReservas(
             @PageableDefault(size = 10, sort = "data", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<MinhaReservaResponse> response = reservationService.listarMinhasReservas(pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}/cancelar")
+    public ResponseEntity<ReservationResponse> cancelarReserva(@PathVariable Long id) {
+        ReservationResponse response = reservationService.cancelarReserva(id);
         return ResponseEntity.ok(response);
     }
 }
