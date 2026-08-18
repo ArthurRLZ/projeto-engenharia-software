@@ -6,6 +6,7 @@ import { Admin } from './admin/admin';
 import { CadastroRecurso } from './cadastro-recurso/cadastro-recurso';
 import { ResourceList } from './resource-list/resource-list';
 import { SolicitarReserva } from './solicitar-reserva/solicitar-reserva';
+import { ConsultaDisponibilidade } from './consulta-disponibilidade/consulta-disponibilidade';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -34,6 +35,11 @@ export const routes: Routes = [
   {
     path: 'reserva/:id',
     component: SolicitarReserva,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'disponibilidade',
+    component: ConsultaDisponibilidade,
     canActivate: [authGuard]
   },
   { path: '**', redirectTo: '/login' }
