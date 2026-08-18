@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @ValidHorario
-public class ReservationRequest {
-
-    @NotNull(message = "O id do recurso é obrigatório")
-    private Long resourceId;
+public class AvailabilityRequest {
 
     @NotNull(message = "A data é obrigatória")
     private LocalDate data;
@@ -20,22 +17,13 @@ public class ReservationRequest {
     @NotNull(message = "O horário de fim é obrigatório")
     private LocalTime horarioFim;
 
-    public ReservationRequest() {
+    public AvailabilityRequest() {
     }
 
-    public ReservationRequest(Long resourceId, LocalDate data, LocalTime horarioInicio, LocalTime horarioFim) {
-        this.resourceId = resourceId;
+    public AvailabilityRequest(LocalDate data, LocalTime horarioInicio, LocalTime horarioFim) {
         this.data = data;
         this.horarioInicio = horarioInicio;
         this.horarioFim = horarioFim;
-    }
-
-    public Long getResourceId() {
-        return resourceId;
-    }
-
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
     }
 
     public LocalDate getData() {
