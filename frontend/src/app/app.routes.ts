@@ -7,6 +7,7 @@ import { CadastroRecurso } from './cadastro-recurso/cadastro-recurso';
 import { ResourceList } from './resource-list/resource-list';
 import { SolicitarReserva } from './solicitar-reserva/solicitar-reserva';
 import { ConsultaDisponibilidade } from './consulta-disponibilidade/consulta-disponibilidade';
+import { MinhasReservas } from './minhas-reservas/minhas-reservas';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -40,6 +41,11 @@ export const routes: Routes = [
   {
     path: 'disponibilidade',
     component: ConsultaDisponibilidade,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'minhas-reservas',
+    component: MinhasReservas,
     canActivate: [authGuard]
   },
   { path: '**', redirectTo: '/login' }
