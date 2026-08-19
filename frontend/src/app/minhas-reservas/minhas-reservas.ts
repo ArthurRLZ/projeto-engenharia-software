@@ -15,6 +15,8 @@ export class MinhasReservas implements OnInit {
   reservas: MinhaReservaResponse[] = [];
   isLoading = true;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
+  cancelandoId: number | null = null;
 
   // paginacao
   currentPage = 0;
@@ -38,6 +40,42 @@ export class MinhasReservas implements OnInit {
       error: () => {
         this.isLoading = false;
         this.errorMessage = 'Erro ao carregar reservas. Tente novamente.';
+      }
+    });
+  }
+
+  podeCancel(reserva: MinhaReservaResponse): boolean {
+    if (reserva.status !== 'PENDENTE' && reserva.status !== 'CONFIRMADA') {
+      return false;
+    }
+    // apenas reservas futuras
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const dataReserva = new Date(reserva.data + 'T00:00:00');
+    return dataReserva > hoje;
+  }
+
+  cancelar(reserva: MinhaReservaResponse): void {
+    // #109 — confirmação antes de cancelar
+    if (!window.confirm(`Deseja cancelar a reserva de "${reserva.resourceNome}"?`)) {
+      return;
+    }
+
+    this.successMessage = null;
+    this.errorMessage = null;
+    this.cancelandoId = reserva.id;
+
+    this.reservationService.cancelarReserva(reserva.id).subscribe({
+      next: () => {
+        this.successMessage = `Reserva de "${reserva.resourceNome}" cancelada com sucesso.`;
+        this.cancelandoId = null;
+        // #110 — atualiza o status local sem recarregar a página
+        const item = this.reservas.find(r => r.id === reserva.id);
+        if (item) item.status = 'CANCELADA';
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao cancelar a reserva. Tente novamente.';
+        this.cancelandoId = null;
       }
     });
   }
