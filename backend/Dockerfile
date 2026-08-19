@@ -10,7 +10,8 @@ COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
 
-# Baixa as dependencias (so refaz se o pom.xml mudar)
+# Garante permissao de execucao e baixa as dependencias
+RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline -B
 
 # Copia o codigo fonte e compila, pulando os testes (testes rodam no CI)

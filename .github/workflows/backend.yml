@@ -25,8 +25,8 @@ jobs:
           # Necessario para o SonarCloud calcular a cobertura corretamente
           fetch-depth: 0
 
-      # 2. Configura o Java 26
-      - name: Configura JDK 26
+      # 2. Configura o Java
+      - name: Configura JDK
         uses: actions/setup-java@v4
         with:
           java-version: '26'
@@ -44,7 +44,9 @@ jobs:
       # 4. Roda os testes E gera o relatorio JaCoCo (o -P test ativa o perfil de teste com H2)
       - name: Roda testes e gera relatorio JaCoCo
         working-directory: backend
-        run: ./mvnw verify -Dspring.profiles.active=test -B
+        run: |
+          chmod +x mvnw
+          ./mvnw verify -Dspring.profiles.active=test -B
 
       # 5. Envia o codigo e o relatorio de cobertura pro SonarCloud
       # O SONAR_TOKEN precisa estar configurado nos Secrets do repositorio no GitHub
@@ -54,6 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          chmod +x mvnw
           ./mvnw sonar:sonar \
             -Dsonar.projectKey=ES-Project-BCC_projeto-engenharia-software \
             -Dsonar.organization=es-project-bcc \
