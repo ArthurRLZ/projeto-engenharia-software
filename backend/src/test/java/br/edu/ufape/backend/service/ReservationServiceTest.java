@@ -1,6 +1,7 @@
 package br.edu.ufape.backend.service;
 
 import br.edu.ufape.backend.dto.MinhaReservaResponse;
+import br.edu.ufape.backend.dto.ReservationResponse;
 import br.edu.ufape.backend.model.Reservation;
 import br.edu.ufape.backend.model.Resource;
 import br.edu.ufape.backend.model.User;
@@ -23,9 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +57,7 @@ class ReservationServiceTest {
     private MockedStatic<SecurityContextHolder> securityContextHolderMock;
 
     private User usuarioLogado;
+    private User outroUsuario;
     private Resource resource;
 
     @BeforeEach
@@ -64,14 +69,19 @@ class ReservationServiceTest {
                 .role(Role.USER)
                 .build();
 
+        outroUsuario = User.builder()
+                .id(2L)
+                .nome("Maria Teste")
+                .email("maria@ufape.br")
+                .role(Role.USER)
+                .build();
+
         resource = Resource.builder()
                 .id(10L)
                 .nome("Laboratório A")
                 .tipo(TipoRecurso.LABORATORIO)
                 .build();
 
-        // simula que o SecurityContextHolder devolve o usuario logado com email
-        // "joao@ufape.br"
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(authentication.isAuthenticated()).thenReturn(true);
@@ -116,7 +126,6 @@ class ReservationServiceTest {
         assertThat(item.getResourceNome()).isEqualTo("Laboratório A");
         assertThat(item.getStatus()).isEqualTo(StatusReserva.PENDENTE);
 
-        // garante que a busca foi feita filtrando pelo usuario logado, nunca por outro
         verify(reservationRepository).findByUserOrderByDataDescHorarioInicioDesc(usuarioLogado, pageable);
     }
 
@@ -133,5 +142,90 @@ class ReservationServiceTest {
 
         assertThat(resultado.getTotalElements()).isEqualTo(0);
         assertThat(resultado.getContent()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Deve cancelar reserva própria futura com sucesso")
+    void deveCancelarReservaPropriaFutura() {
+        Reservation reserva = Reservation.builder()
+                .id(200L)
+                .user(usuarioLogado)
+                .resource(resource)
+                .data(LocalDate.now().plusDays(1))
+                .horarioInicio(LocalTime.of(10, 0))
+                .horarioFim(LocalTime.of(11, 0))
+                .status(StatusReserva.PENDENTE)
+                .build();
+
+        when(reservationRepository.findById(200L)).thenReturn(Optional.of(reserva));
+        when(reservationRepository.save(any())).thenReturn(reserva);
+
+        ReservationResponse response = reservationService.cancelarReserva(200L);
+
+        assertThat(reserva.getStatus()).isEqualTo(StatusReserva.CANCELADA);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve lançar 403 ao tentar cancelar reserva de outro usuário")
+    void deveLancar403_quandoCancelarReservaDeOutroUsuario() {
+        Reservation reserva = Reservation.builder()
+                .id(201L)
+                .user(outroUsuario)
+                .resource(resource)
+                .data(LocalDate.now().plusDays(1))
+                .horarioInicio(LocalTime.of(10, 0))
+                .horarioFim(LocalTime.of(11, 0))
+                .status(StatusReserva.PENDENTE)
+                .build();
+
+        when(reservationRepository.findById(201L)).thenReturn(Optional.of(reserva));
+
+        assertThatThrownBy(() -> reservationService.cancelarReserva(201L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> assertThat(((ResponseStatusException) ex).getStatusCode())
+                        .isEqualTo(HttpStatus.FORBIDDEN));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao tentar cancelar reserva já cancelada")
+    void deveLancarErro_quandoReservaJaCancelada() {
+        Reservation reserva = Reservation.builder()
+                .id(202L)
+                .user(usuarioLogado)
+                .resource(resource)
+                .data(LocalDate.now().plusDays(1))
+                .horarioInicio(LocalTime.of(10, 0))
+                .horarioFim(LocalTime.of(11, 0))
+                .status(StatusReserva.CANCELADA)
+                .build();
+
+        when(reservationRepository.findById(202L)).thenReturn(Optional.of(reserva));
+
+        assertThatThrownBy(() -> reservationService.cancelarReserva(202L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> assertThat(((ResponseStatusException) ex).getStatusCode())
+                        .isEqualTo(HttpStatus.CONFLICT));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao tentar cancelar reserva já iniciada ou encerrada")
+    void deveLancarErro_quandoReservaJaIniciada() {
+        Reservation reserva = Reservation.builder()
+                .id(203L)
+                .user(usuarioLogado)
+                .resource(resource)
+                .data(LocalDate.now().minusDays(1))
+                .horarioInicio(LocalTime.of(10, 0))
+                .horarioFim(LocalTime.of(11, 0))
+                .status(StatusReserva.PENDENTE)
+                .build();
+
+        when(reservationRepository.findById(203L)).thenReturn(Optional.of(reserva));
+
+        assertThatThrownBy(() -> reservationService.cancelarReserva(203L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> assertThat(((ResponseStatusException) ex).getStatusCode())
+                        .isEqualTo(HttpStatus.CONFLICT));
     }
 }
