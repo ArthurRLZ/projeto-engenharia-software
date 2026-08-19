@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface ReservationRequest {
@@ -18,6 +18,27 @@ export interface ReservationResponse {
     status: 'PENDENTE' | 'CONFIRMADA' | 'RECUSADA';
 }
 
+export interface Page<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    number: number;
+    size: number;
+    first: boolean;
+    last: boolean;
+}
+
+export interface MinhaReservaResponse {
+    id: number;
+    resourceId: number;
+    resourceNome: string;
+    resourceTipo: 'LABORATORIO' | 'EQUIPAMENTO';
+    data: string;
+    horarioInicio: string;
+    horarioFim: string;
+    status: 'PENDENTE' | 'CONFIRMADA' | 'RECUSADA' | 'CANCELADA';
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
     private apiUrl = 'http://localhost:8080';
@@ -25,5 +46,13 @@ export class ReservationService {
 
     criarReserva(reserva: ReservationRequest): Observable<ReservationResponse> {
         return this.http.post<ReservationResponse>(`${this.apiUrl}/api/reservations`, reserva);
+    }
+
+    // lista as reservas do usuario autenticado com paginacao (US08, task #96)
+    listarMinhasReservas(page: number, size: number): Observable<Page<MinhaReservaResponse>> {
+        const params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString());
+        return this.http.get<Page<MinhaReservaResponse>>(`${this.apiUrl}/api/reservations/me`, { params });
     }
 }
