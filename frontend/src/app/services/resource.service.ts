@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ResourceRequest {
   nome: string;
@@ -30,7 +31,8 @@ export interface AvailabilityResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ResourceService {
-  private apiUrl = 'http://localhost:8080';
+  // usa a URL definida no environment (localhost em dev, Render em producao)
+  private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
   criarRecurso(recurso: ResourceRequest): Observable<ResourceResponse> {

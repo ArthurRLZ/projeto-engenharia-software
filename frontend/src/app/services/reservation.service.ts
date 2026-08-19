@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ReservationRequest {
     resourceId: number;
@@ -41,7 +42,8 @@ export interface MinhaReservaResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
-    private apiUrl = 'http://localhost:8080';
+    // usa a URL definida no environment (localhost em dev, Render em producao)
+    private apiUrl = environment.apiUrl;
     private http = inject(HttpClient);
 
     criarReserva(reserva: ReservationRequest): Observable<ReservationResponse> {
