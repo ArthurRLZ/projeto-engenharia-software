@@ -8,7 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,21 @@ public class ResourceController {
     public ResponseEntity<ResourceResponse> criarRecurso(@Valid @RequestBody ResourceRequest request) {
         ResourceResponse response = resourceService.criarRecurso(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // endpoint pra editar um recurso existente, so admin pode usar
+    @PutMapping("/{id}")
+    public ResponseEntity<ResourceResponse> editarRecurso(
+            @PathVariable Long id,
+            @Valid @RequestBody ResourceRequest request) {
+        ResourceResponse response = resourceService.editarRecurso(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    // busca um recurso especifico pelo id, o front usa isso pra montar o form de edicao
+    @GetMapping("/{id}")
+    public ResponseEntity<ResourceResponse> buscarRecursoPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(resourceService.buscarPorId(id));
     }
 
     @GetMapping

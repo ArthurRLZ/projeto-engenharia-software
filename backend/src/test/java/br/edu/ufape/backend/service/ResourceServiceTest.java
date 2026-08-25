@@ -2,6 +2,8 @@ package br.edu.ufape.backend.service;
 
 import br.edu.ufape.backend.dto.AvailabilityRequest;
 import br.edu.ufape.backend.dto.AvailabilityResponse;
+import br.edu.ufape.backend.dto.ResourceRequest;
+import br.edu.ufape.backend.dto.ResourceResponse;
 import br.edu.ufape.backend.model.Resource;
 import br.edu.ufape.backend.model.enums.StatusReserva;
 import br.edu.ufape.backend.model.enums.TipoRecurso;
@@ -19,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -144,5 +147,53 @@ class ResourceServiceTest {
 
         assertThatThrownBy(() -> resourceService.consultarDisponibilidade(request))
                 .isInstanceOf(ResponseStatusException.class);
+    }
+
+    // ---- testes de editarRecurso (task #146, #147) ----
+
+    // teste 6: edicao com sucesso - deve retornar o resource atualizado
+    @Test
+    @DisplayName("Deve editar e retornar o recurso atualizado quando o id existe")
+    void deveEditarRecurso_quandoIdExiste() {
+        ResourceRequest request = new ResourceRequest("Lab B", "Lab atualizado", 40, TipoRecurso.LABORATORIO, false);
+
+        when(resourceRepository.findById(1L)).thenReturn(Optional.of(lab1));
+        when(resourceRepository.save(any(Resource.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ResourceResponse response = resourceService.editarRecurso(1L, request);
+
+        assertThat(response.getNome()).isEqualTo("Lab B");
+        assertThat(response.getDescricao()).isEqualTo("Lab atualizado");
+        assertThat(response.getCapacidade()).isEqualTo(40);
+        assertThat(response.getTipo()).isEqualTo(TipoRecurso.LABORATORIO);
+        assertThat(response.getStatusFuncionamento()).isFalse();
+    }
+
+    // teste 7: edicao com id inexistente deve lancar 404 NOT_FOUND
+    @Test
+    @DisplayName("Deve lançar 404 NOT_FOUND quando o id do recurso não existe")
+    void deveLancar404_quandoIdNaoExiste() {
+        ResourceRequest request = new ResourceRequest("Qualquer", "Desc", 10, TipoRecurso.EQUIPAMENTO, true);
+
+        when(resourceRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> resourceService.editarRecurso(999L, request))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("404");
+    }
+
+    // teste 8: statusFuncionamento null no request nao deve sobrescrever o valor atual
+    @Test
+    @DisplayName("Deve manter statusFuncionamento atual quando request envia null")
+    void deveManter_statusFuncionamento_quandoRequestEnviaNull() {
+        ResourceRequest request = new ResourceRequest("Lab A", "Lab de redes", 30, TipoRecurso.LABORATORIO, null);
+
+        when(resourceRepository.findById(1L)).thenReturn(Optional.of(lab1));
+        when(resourceRepository.save(any(Resource.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ResourceResponse response = resourceService.editarRecurso(1L, request);
+
+        // lab1 foi criado com statusFuncionamento=true, e o request mandou null
+        assertThat(response.getStatusFuncionamento()).isTrue();
     }
 }

@@ -39,6 +39,16 @@ export class ResourceService {
     return this.http.post<ResourceResponse>(`${this.apiUrl}/api/resources`, recurso);
   }
 
+  // manda o PUT pra atualizar o recurso pelo id
+  editarRecurso(id: number, recurso: ResourceRequest): Observable<ResourceResponse> {
+    return this.http.put<ResourceResponse>(`${this.apiUrl}/api/resources/${id}`, recurso);
+  }
+
+  // busca os dados de um recurso especifico pra preencher o form de edicao
+  buscarRecursoPorId(id: number): Observable<ResourceResponse> {
+    return this.http.get<ResourceResponse>(`${this.apiUrl}/api/resources/${id}`);
+  }
+
   listarRecursos(): Observable<ResourceResponse[]> {
     return this.http.get<ResourceResponse[]>(`${this.apiUrl}/api/resources`);
   }

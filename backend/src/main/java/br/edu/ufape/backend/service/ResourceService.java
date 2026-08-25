@@ -43,6 +43,33 @@ public class ResourceService {
                 return toResponse(resource);
         }
 
+        // edita os campos do recurso existente, se nao achar o id da 404
+        public ResourceResponse editarRecurso(Long id, ResourceRequest request) {
+                Resource resource = resourceRepository.findById(id)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Recurso não encontrado com id: " + id));
+
+                resource.setNome(request.getNome());
+                resource.setDescricao(request.getDescricao());
+                resource.setCapacidade(request.getCapacidade());
+                resource.setTipo(request.getTipo());
+                // so atualiza o status se vier preenchido, senao mantém o que tava antes
+                if (request.getStatusFuncionamento() != null) {
+                        resource.setStatusFuncionamento(request.getStatusFuncionamento());
+                }
+
+                resource = resourceRepository.save(resource);
+                return toResponse(resource);
+        }
+
+        // busca um recurso pelo id, usado pra preencher o form de edição no front
+        public ResourceResponse buscarPorId(Long id) {
+                Resource resource = resourceRepository.findById(id)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Recurso não encontrado com id: " + id));
+                return toResponse(resource);
+        }
+
         public List<ResourceResponse> listarRecursos() {
                 return resourceRepository.findAll().stream()
                                 .map(this::toResponse)
