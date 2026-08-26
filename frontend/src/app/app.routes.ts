@@ -8,6 +8,7 @@ import { ResourceList } from './resource-list/resource-list';
 import { SolicitarReserva } from './solicitar-reserva/solicitar-reserva';
 import { ConsultaDisponibilidade } from './consulta-disponibilidade/consulta-disponibilidade';
 import { MinhasReservas } from './minhas-reservas/minhas-reservas';
+import { ReservasPorRecurso } from './reservas-por-recurso/reservas-por-recurso';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -54,5 +55,12 @@ export const routes: Routes = [
     component: MinhasReservas,
     canActivate: [authGuard]
   },
+  // rota de reservas por recurso (somente admin)
+  {
+    path: 'recursos/:id/reservas',
+    component: ReservasPorRecurso,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ADMIN'] }
+  },
   { path: '**', redirectTo: '/login' }
-];
+];

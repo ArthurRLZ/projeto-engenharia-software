@@ -3,11 +3,13 @@ package br.edu.ufape.backend.service;
 import br.edu.ufape.backend.dto.ReservationAdminResponse;
 import br.edu.ufape.backend.dto.ReservationRequest;
 import br.edu.ufape.backend.dto.ReservationResponse;
+
 import br.edu.ufape.backend.model.Reservation;
 import br.edu.ufape.backend.model.Resource;
 import br.edu.ufape.backend.model.User;
 import br.edu.ufape.backend.model.enums.StatusReserva;
 import br.edu.ufape.backend.repository.ReservationRepository;
+import br.edu.ufape.backend.repository.ResourceBlockRepository;
 import br.edu.ufape.backend.repository.ResourceRepository;
 import br.edu.ufape.backend.repository.UserRepository;
 import br.edu.ufape.backend.dto.MinhaReservaResponse;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.time.ZoneId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,12 +34,14 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ResourceRepository resourceRepository;
     private final UserRepository userRepository;
+    private final ResourceBlockRepository resourceBlockRepository;
 
     public ReservationService(ReservationRepository reservationRepository, ResourceRepository resourceRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository, ResourceBlockRepository resourceBlockRepository) {
         this.reservationRepository = reservationRepository;
         this.resourceRepository = resourceRepository;
         this.userRepository = userRepository;
+        this.resourceBlockRepository = resourceBlockRepository;
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -56,6 +61,16 @@ public class ReservationService {
 
         if (idsConflitantes.contains(resource.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Horário ocupado");
+        }
+
+        // verifica se ha bloqueio administrativo no periodo solicitado (#172)
+        LocalDateTime inicioDateTime = request.getData().atTime(request.getHorarioInicio());
+        LocalDateTime fimDateTime = request.getData().atTime(request.getHorarioFim());
+        List<Long> idsBloqueados = resourceBlockRepository.findBlockedResourceIds(inicioDateTime, fimDateTime);
+
+        if (idsBloqueados.contains(resource.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "O recurso está bloqueado neste período por manutenção ou restrição administrativa");
         }
 
         Reservation reservation = Reservation.builder()
@@ -159,6 +174,7 @@ public class ReservationService {
                 reservation.getHorarioFim(),
                 reservation.getStatus());
     }
+
 
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

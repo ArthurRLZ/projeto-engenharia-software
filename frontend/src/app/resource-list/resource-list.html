@@ -43,6 +43,7 @@
         <div class="resource-actions">
           <a [routerLink]="['/reserva', recurso.id]" class="btn-reservar">Reservar</a>
           <a *ngIf="isAdmin()" [routerLink]="['/recursos', recurso.id, 'editar']" class="btn-editar">✏️ Editar</a>
+          <a *ngIf="isAdmin()" [routerLink]="['/recursos', recurso.id, 'reservas']" class="btn-ver-reservas">📋 Ver Reservas</a>
         </div>
       </div>
     </div>

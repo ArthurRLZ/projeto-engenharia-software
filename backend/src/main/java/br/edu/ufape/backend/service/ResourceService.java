@@ -13,17 +13,23 @@ import br.edu.ufape.backend.dto.ResourceResponse;
 import br.edu.ufape.backend.model.Resource;
 import br.edu.ufape.backend.model.enums.StatusReserva;
 import br.edu.ufape.backend.repository.ReservationRepository;
+import br.edu.ufape.backend.repository.ResourceBlockRepository;
 import br.edu.ufape.backend.repository.ResourceRepository;
+
+import java.time.LocalDateTime;
 
 @Service
 public class ResourceService {
 
         private final ResourceRepository resourceRepository;
         private final ReservationRepository reservationRepository;
+        private final ResourceBlockRepository resourceBlockRepository;
 
-        public ResourceService(ResourceRepository resourceRepository, ReservationRepository reservationRepository) {
+        public ResourceService(ResourceRepository resourceRepository, ReservationRepository reservationRepository,
+                        ResourceBlockRepository resourceBlockRepository) {
                 this.resourceRepository = resourceRepository;
                 this.reservationRepository = reservationRepository;
+                this.resourceBlockRepository = resourceBlockRepository;
         }
 
         public ResourceResponse criarRecurso(ResourceRequest request) {
@@ -92,6 +98,11 @@ public class ResourceService {
                                 request.getHorarioFim(),
                                 statusesAtivos);
 
+                // integra bloqueios administrativos: recurso bloqueado aparece como indisponivel (#171)
+                LocalDateTime inicioDateTime = request.getData().atTime(request.getHorarioInicio());
+                LocalDateTime fimDateTime = request.getData().atTime(request.getHorarioFim());
+                List<Long> idsBloqueados = resourceBlockRepository.findBlockedResourceIds(inicioDateTime, fimDateTime);
+
                 return resourceRepository.findAll().stream()
                                 .map(resource -> new AvailabilityResponse(
                                                 resource.getId(),
@@ -99,7 +110,8 @@ public class ResourceService {
                                                 resource.getTipo(),
                                                 resource.getDescricao(),
                                                 resource.getCapacidade(),
-                                                !idsOcupados.contains(resource.getId())))
+                                                !idsOcupados.contains(resource.getId())
+                                                                && !idsBloqueados.contains(resource.getId())))
                                 .toList();
         }
 

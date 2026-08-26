@@ -8,6 +8,7 @@ import br.edu.ufape.backend.model.Resource;
 import br.edu.ufape.backend.model.enums.StatusReserva;
 import br.edu.ufape.backend.model.enums.TipoRecurso;
 import br.edu.ufape.backend.repository.ReservationRepository;
+import br.edu.ufape.backend.repository.ResourceBlockRepository;
 import br.edu.ufape.backend.repository.ResourceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,9 @@ class ResourceServiceTest {
 
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private ResourceBlockRepository resourceBlockRepository;
 
     @InjectMocks
     private ResourceService resourceService;
@@ -76,6 +80,9 @@ class ResourceServiceTest {
         when(reservationRepository.findConflictingResourceIds(
                 eq(data), eq(inicio), eq(fim), anyList()))
                 .thenReturn(List.of());
+        // sem bloqueios administrativos no periodo
+        when(resourceBlockRepository.findBlockedResourceIds(any(), any()))
+                .thenReturn(List.of());
 
         AvailabilityRequest request = new AvailabilityRequest(data, inicio, fim);
         List<AvailabilityResponse> result = resourceService.consultarDisponibilidade(request);
@@ -92,6 +99,9 @@ class ResourceServiceTest {
         // simula que o lab1 (id=1) tem conflito de horario
         when(reservationRepository.findConflictingResourceIds(eq(data), eq(inicio), eq(fim), anyList()))
                 .thenReturn(List.of(1L));
+        // sem bloqueios administrativos
+        when(resourceBlockRepository.findBlockedResourceIds(any(), any()))
+                .thenReturn(List.of());
 
         AvailabilityRequest request = new AvailabilityRequest(data, inicio, fim);
         List<AvailabilityResponse> result = resourceService.consultarDisponibilidade(request);
@@ -114,6 +124,9 @@ class ResourceServiceTest {
         when(reservationRepository.findConflictingResourceIds(
                 data, inicio, fim,
                 List.of(StatusReserva.PENDENTE, StatusReserva.CONFIRMADA)))
+                .thenReturn(List.of());
+        // sem bloqueios administrativos
+        when(resourceBlockRepository.findBlockedResourceIds(any(), any()))
                 .thenReturn(List.of());
 
         AvailabilityRequest request = new AvailabilityRequest(data, inicio, fim);
