@@ -1,15 +1,36 @@
 <div class="admin-container">
   <div class="admin-card">
     <div class="admin-header">
-      <div class="badge-admin">ADMIN</div>
+      <span class="badge-admin">Admin</span>
       <h1>Painel Administrativo</h1>
       <p class="subtitle">Bem-vindo, <strong>{{ userEmail }}</strong></p>
     </div>
 
     <div class="admin-body">
-      <a routerLink="/cadastro-recurso" class="btn-action">📦 Cadastrar Novo Recurso</a>
-      <a routerLink="/bloquear-recurso" class="btn-action">🔒 Bloquear Recurso</a>
-      <a routerLink="/relatorios" class="btn-action">Relatório de Utilização</a>
+      <h2 class="section-title">Gerenciamento</h2>
+      <div class="admin-grid">
+        <a routerLink="/cadastro-recurso" class="admin-action">
+          <span class="admin-action-icon">📦</span>
+          <div class="admin-action-text">
+            <span class="admin-action-label">Cadastrar Recurso</span>
+            <span class="admin-action-desc">Adicionar novos laboratórios ou equipamentos</span>
+          </div>
+        </a>
+        <a routerLink="/bloquear-recurso" class="admin-action">
+          <span class="admin-action-icon">🔒</span>
+          <div class="admin-action-text">
+            <span class="admin-action-label">Bloquear Recurso</span>
+            <span class="admin-action-desc">Impedir reservas em um período</span>
+          </div>
+        </a>
+        <a routerLink="/relatorios" class="admin-action">
+          <span class="admin-action-icon">📊</span>
+          <div class="admin-action-text">
+            <span class="admin-action-label">Relatório de Utilização</span>
+            <span class="admin-action-desc">Acompanhar demanda e uso dos recursos</span>
+          </div>
+        </a>
+      </div>
     </div>
 
     <div class="admin-footer">

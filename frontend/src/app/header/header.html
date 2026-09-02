@@ -1,11 +1,17 @@
 <header class="app-header" *ngIf="authService.isAuthenticated()">
   <div class="logo">
-    <a routerLink="/home">SGR</a>
+    <a routerLink="/home">
+      <span class="logo-accent"></span>
+      <span class="logo-text">SGR</span>
+    </a>
   </div>
   <div class="header-actions">
     <div class="notification-wrapper">
-      <button class="btn-bell" (click)="toggleDropdown()">
-        🔔
+      <button class="btn-bell" (click)="toggleDropdown()" aria-label="Notificações">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
         <span class="badge" *ngIf="naoLidasCount > 0">{{ naoLidasCount > 99 ? '99+' : naoLidasCount }}</span>
       </button>
 

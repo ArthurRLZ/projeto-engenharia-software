@@ -1,99 +1,110 @@
 .page-container {
-  min-height: 100vh;
-  padding: 2rem;
+  min-height: calc(100vh - 64px);
+  padding: 2.5rem 1.5rem;
   display: flex;
   justify-content: center;
 }
 
 .content-card {
-  background: var(--card-bg, #fff);
-  border-radius: 12px;
-  padding: 2rem;
+  background: var(--branco);
+  border-radius: var(--raio-lg);
   width: 100%;
   max-width: 960px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: var(--sombra-md);
+  overflow: hidden;
 }
 
 .card-header {
-  margin-bottom: 2rem;
+  padding: 1.5rem 2rem;
   position: relative;
+  border-top: 3px solid var(--vermelho);
 }
 
 .btn-back {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #6366f1;
+  color: var(--cinza-400);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
+  transition: color var(--transicao);
 }
 
-.btn-back:hover { text-decoration: underline; }
+.btn-back:hover {
+  color: var(--vermelho);
+}
 
 .header-content {
   text-align: center;
 }
 
 .header-icon {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   margin-bottom: 0.5rem;
 }
 
 h1 {
-  margin: 0 0 0.25rem;
-  font-size: 1.8rem;
+  margin: 0 0 4px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cinza-900);
+  letter-spacing: -0.3px;
 }
 
 .card-header p {
-  color: #666;
+  color: var(--cinza-400);
   margin: 0;
+  font-size: 0.85rem;
 }
 
-/* loading e erro */
+/* Loading / Erro */
 .loading-state {
   text-align: center;
-  padding: 2rem;
-  color: #666;
+  padding: 3rem;
+  color: var(--cinza-400);
 }
 
 .alert {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--raio-md);
+  margin: 0 1.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .alert-error {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--erro-bg);
+  color: var(--erro);
 }
 
-/* estado vazio */
+/* Empty state */
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
-  color: #666;
+  padding: 3rem 1.5rem;
+  color: var(--cinza-400);
 }
 
 .empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .btn-primary {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
-  background: #6366f1;
-  color: white;
-  border-radius: 8px;
+  background: var(--vermelho);
+  color: var(--branco);
+  border-radius: var(--raio-md);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.88rem;
 }
 
-/* tabela */
+/* Tabela */
 .table-wrapper {
   overflow-x: auto;
 }
@@ -101,68 +112,91 @@ h1 {
 .reservas-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
 }
 
 .reservas-table th {
-  background: #f8f9fa;
+  background: var(--cinza-50);
   text-align: left;
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 1.25rem;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 2px solid #e5e7eb;
+  color: var(--cinza-600);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--cinza-100);
 }
 
 .reservas-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
-  color: #374151;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--cinza-50);
+  color: var(--cinza-700);
+  font-size: 0.88rem;
   vertical-align: middle;
 }
 
 .reservas-table tr:hover td {
-  background: #f9fafb;
+  background: var(--cinza-50);
 }
 
 .email-cell {
-  color: #6b7280;
-  font-size: 0.85rem;
+  color: var(--cinza-400);
+  font-size: 0.82rem;
 }
 
-/* badges de status */
+/* Status badges */
 .status-badge {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  font-weight: 500;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: var(--raio-pill);
+  font-weight: 600;
   white-space: nowrap;
 }
 
-.badge-confirmada { background: #dcfce7; color: #16a34a; }
-.badge-pendente   { background: #fef9c3; color: #ca8a04; }
-.badge-recusada   { background: #fee2e2; color: #dc2626; }
-.badge-cancelada  { background: #f3f4f6; color: #6b7280; }
+.badge-confirmada {
+  background: var(--sucesso-bg);
+  color: var(--sucesso);
+}
 
-/* paginação */
+.badge-pendente {
+  background: var(--aviso-bg);
+  color: var(--aviso);
+}
+
+.badge-recusada {
+  background: var(--erro-bg);
+  color: var(--erro);
+}
+
+.badge-cancelada {
+  background: var(--cinza-100);
+  color: var(--cinza-500);
+}
+
+/* Paginação */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--cinza-100);
 }
 
 .btn-page {
-  padding: 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  background: #fff;
+  padding: 0.45rem 1rem;
+  border: 1.5px solid var(--cinza-200);
+  border-radius: var(--raio-sm);
+  background: var(--branco);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--cinza-600);
+  transition: all var(--transicao);
 }
 
 .btn-page:hover:not(:disabled) {
-  background: #f3f4f6;
+  border-color: var(--vermelho);
+  color: var(--vermelho);
 }
 
 .btn-page:disabled {
@@ -171,6 +205,6 @@ h1 {
 }
 
 .page-info {
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 0.82rem;
+  color: var(--cinza-400);
 }
