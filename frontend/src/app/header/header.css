@@ -2,22 +2,40 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 2rem;
-  background-color: white;
-  border-bottom: 1px solid #eaeaea;
+  padding: 0 2rem;
+  height: 64px;
+  background-color: var(--branco);
+  border-bottom: 1px solid var(--cinza-100);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: var(--sombra-sm);
 }
 
+/* Logo */
 .logo a {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
 }
 
+.logo-accent {
+  display: block;
+  width: 4px;
+  height: 24px;
+  background: var(--vermelho);
+  border-radius: 2px;
+}
+
+.logo-text {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cinza-900);
+  letter-spacing: -0.5px;
+}
+
+/* Ações */
 .header-actions {
   display: flex;
   align-items: center;
@@ -30,56 +48,73 @@
 .btn-bell {
   background: none;
   border: none;
-  font-size: 1.25rem;
+  color: var(--cinza-500);
   cursor: pointer;
   position: relative;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  padding: 10px;
+  border-radius: var(--raio-md);
+  transition: all var(--transicao);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-bell:hover {
-  background-color: #f3f4f6;
+  background-color: var(--cinza-50);
+  color: var(--cinza-700);
 }
 
 .badge {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  background-color: #ef4444;
+  top: 4px;
+  right: 4px;
+  background-color: var(--vermelho);
   color: white;
-  font-size: 0.65rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
-  min-width: 14px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--raio-pill);
+  min-width: 16px;
   text-align: center;
+  line-height: 1.4;
 }
 
+/* Dropdown de notificações */
 .notification-dropdown {
   position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  width: 320px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  border: 1px solid #eaeaea;
+  top: calc(100% + 8px);
+  right: -8px;
+  width: 340px;
+  background: var(--branco);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-xl);
+  border: 1px solid var(--cinza-100);
   overflow: hidden;
   z-index: 101;
+  animation: dropdownIn 0.2s ease-out;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-header {
-  padding: 1rem;
-  border-bottom: 1px solid #eaeaea;
-  background-color: #f9fafb;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--cinza-100);
 }
 
 .dropdown-header h3 {
   margin: 0;
-  font-size: 1rem;
-  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--cinza-800);
 }
 
 .dropdown-body {
@@ -88,56 +123,63 @@
 }
 
 .no-notifications {
-  padding: 1rem;
+  padding: 2rem 1rem;
   text-align: center;
-  color: #6b7280;
-  font-size: 0.875rem;
+  color: var(--cinza-400);
+  font-size: 0.85rem;
 }
 
 .notification-item {
-  padding: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--cinza-50);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transicao);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
 }
 
 .notification-item:hover {
-  background-color: #f9fafb;
+  background-color: var(--cinza-50);
 }
 
 .notification-item.unread {
-  background-color: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  background-color: var(--azul-light);
+  border-left: 3px solid var(--azul);
 }
 
 .notification-item p {
-  margin: 0 0 0.25rem 0;
-  font-size: 0.875rem;
-  color: #1f2937;
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  color: var(--cinza-800);
+  line-height: 1.4;
 }
 
 .notification-item .time {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: 0.72rem;
+  color: var(--cinza-400);
 }
 
 .dropdown-footer {
   padding: 0.5rem;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid var(--cinza-100);
   text-align: center;
 }
 
 .dropdown-footer button {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: var(--vermelho);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.6rem;
   width: 100%;
+  border-radius: var(--raio-sm);
+  transition: background-color var(--transicao);
 }
 
 .dropdown-footer button:hover {
-  text-decoration: underline;
+  background-color: var(--vermelho-light);
 }

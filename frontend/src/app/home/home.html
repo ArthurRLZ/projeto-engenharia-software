@@ -4,7 +4,7 @@
       <div class="avatar">
         <span>{{ userEmail ? userEmail[0].toUpperCase() : '?' }}</span>
       </div>
-      <h1>Bem-vindo ao Sistema</h1>
+      <h1>Bem-vindo ao SGR</h1>
       <p class="user-email">{{ userEmail }}</p>
       <div class="role-badge" [class.badge-admin]="isAdmin" [class.badge-user]="!isAdmin">
         {{ userRole }}
@@ -12,10 +12,25 @@
     </div>
 
     <div class="home-body">
-      <a routerLink="/recursos" class="btn-admin">Ver Recursos Disponíveis →</a>
-      <a routerLink="/disponibilidade" class="btn-admin">Consultar Disponibilidade →</a>
-      <a routerLink="/minhas-reservas" class="btn-admin">Minhas Reservas →</a>
-      <a routerLink="/admin" class="btn-admin" *ngIf="isAdmin">Acessar Painel Admin →</a>
+      <h2 class="section-title">Acesso Rápido</h2>
+      <div class="actions-grid">
+        <a routerLink="/recursos" class="action-card">
+          <span class="action-icon">📂</span>
+          <span class="action-label">Recursos Disponíveis</span>
+        </a>
+        <a routerLink="/disponibilidade" class="action-card">
+          <span class="action-icon">🔍</span>
+          <span class="action-label">Consultar Disponibilidade</span>
+        </a>
+        <a routerLink="/minhas-reservas" class="action-card">
+          <span class="action-icon">📋</span>
+          <span class="action-label">Minhas Reservas</span>
+        </a>
+        <a routerLink="/admin" class="action-card action-admin" *ngIf="isAdmin">
+          <span class="action-icon">⚙️</span>
+          <span class="action-label">Painel Admin</span>
+        </a>
+      </div>
     </div>
 
     <div class="home-footer">
